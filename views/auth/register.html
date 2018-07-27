@@ -1,0 +1,23 @@
+<div class="container jumbotron">
+    <h1>User Resgister/ Login </h1>
+    <form>
+        <div class="form-group">
+            <label for="username">Username : </label>
+            <input type="email" required class="form-control" ng-model="email">
+        </div>
+        <div class="form-group">
+            <label for="password">Password : </label>
+            <input type="password" required class="form-control" ng-model="password">
+        </div>
+        <button class="btn  btn-primary btn-block" ng-click="registerUser()">
+            Register
+        </button>  
+        <button class="btn  btn-warning btn-block" ng-click="loginUser()">
+            Login
+        </button>  
+        <button class="btn btn-success btn block" ng-click="getData()">
+            Get User Data
+        </button>
+        
+    </form>
+</div>
