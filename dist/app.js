@@ -44532,13 +44532,38 @@ var firebase = require('firebase');
 
 (function(){
     angular.module("DemoModule", [])
-    .config(function(){
+    
+    .config(["$httpProvider", function($httpProvider){
+        $httpProvider.interceptors.push("LoggerInterceptor");
         firebase.initializeApp({
             apiKey: "AIzaSyC2yI5MKVaOtspLnH6mhYqnwysbSkCTdiM",
             authDomain: "angular-demo-a63b6.firebaseapp.com"
         })
+    }])
+    .run(function(){
+        // $httpProvider.interceptors.push("LoggerInterceptor")
     })
-    .directive("userRegister", function(AuthService, DataService){
+    .factory("LoggerInterceptor",["$q", function($q){
+        return {
+            request : function(config){
+                console.log("LOGGER INTERCEPTOR", config);
+                return config;
+            },
+            requestError : function(rejection){
+                console.log(rejection);
+                return $q.reject(rejection);
+            },
+            response : function(response){
+                console.log(response);
+                return response || $q.when(response);
+            },
+            responseError : function(rejection){
+                console.log(rejection);
+                return $q.reject(rejection);
+            } 
+        }
+    }])
+    .directive("userRegister",["AuthService","DataService", function(AuthService, DataService){
         return {
             restrict : "ACE",
             templateUrl : "./views/auth/register.html",
@@ -44559,7 +44584,7 @@ var firebase = require('firebase');
                 }
             }
         }
-    })
+    }])
     .controller("DemoController", function($scope){})
     .service("AuthService", function(){
         var token = "";
@@ -44595,8 +44620,7 @@ var firebase = require('firebase');
     .service("DataService", function($http, AuthService){
         this.getUserData = function(){
             return $http({
-                url : "https://angular-demo-a63b6.firebaseio.com/users.json?auth=" 
-                    + AuthService.getToken(),
+                url : "https://angular-demo-a63b6.firebaseio.com/users.json?auth="+AuthService.getToken() ,
                 method : "GET" 
             })
         }
