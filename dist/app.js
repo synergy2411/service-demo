@@ -44531,16 +44531,63 @@ var __importDefault;
 var firebase = require('firebase');
 
 (function(){
-    angular.module("DemoModule", [])
+    angular.module("DemoModule", ["ngRoute"])
     
-    .config(["$httpProvider", function($httpProvider){
+    .config(function($httpProvider, $routeProvider){
+        
+        // $rootScope.$on("$routeChangeStart", function(...args){
+        //     console.log("Route Change Event Fired!");
+        //     console.log(args);
+        // })
+
+        // $rootScope.$on("$routeChangeSuccess", function(...args){
+        //     console.log("Route Change Event Fired!");
+        //     console.log(args);
+        // })
+
+        $routeProvider
+        .when("/", {
+            template : "Home Route" 
+        })
+        .when("/about", {
+            template : "About Route"
+        })
+        .when("/product/:id", {
+            templateUrl : './views/product/product.html',
+            controller : function($scope, $route, $routeParams){
+                $scope.model = "Model Data";
+                console.log("Route : ", $route);
+                console.log("Route Params : ", $routeParams);
+            }
+        })
+        .when("/contact", {
+            template : "Contact Route"
+        })
+        .otherwise(
+            {
+                redirectTo : function(){
+                    return "/";
+                }
+            }
+        )
+
+
         $httpProvider.interceptors.push("LoggerInterceptor");
         firebase.initializeApp({
             apiKey: "AIzaSyC2yI5MKVaOtspLnH6mhYqnwysbSkCTdiM",
             authDomain: "angular-demo-a63b6.firebaseapp.com"
         })
-    }])
-    .run(function(){
+    })
+    .run(function($rootScope){
+        $rootScope.$on("$routeChangeStart", function(...args){
+            console.log("Route Change Event Fired!");
+            console.log(args);
+        })
+
+        $rootScope.$on("$routeChangeSuccess", function(...args){
+            console.log("Route Change Event Fired!");
+            console.log(args);
+        })
         // $httpProvider.interceptors.push("LoggerInterceptor")
     })
     .factory("LoggerInterceptor",["$q", function($q){
